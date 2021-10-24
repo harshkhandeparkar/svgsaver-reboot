@@ -2,10 +2,12 @@
   "name": "svgsaver-reboot",
   "version": "0.10.0",
   "description": "[Fork] A modern, updated, typescript version of the popular Javascript library Hypercubed/svgsaver.",
-  "main": "lib/svgsaver.js",
-  "jsnext:main": "src/svgsaver.js",
+  "main": "build/index.js",
+  "typings": "build/index.d.js",
   "scripts": {
-
+    "build": "tsc",
+    "doc": "echo 'jsdoc not set up yet'",
+    "npm-publish": "yarn build && yarn doc && git add dist && git add docs && git add example/docs && yarn publish"
   },
   "keywords": [
     "svgsaver",
@@ -17,7 +19,10 @@
     "png"
   ],
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^16.11.4",
+    "typescript": "^4.4.4"
+  },
   "dependencies": {
     "computed-styles": "^1.1.2",
     "file-saver": "^1.3.3"

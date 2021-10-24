@@ -1,7 +1,5 @@
-*
-!src/*
-!lib/*
-!index.*
-!browser.*
-!README.md
-!package.json
+node_modules
+node_modules/*
+TODO.txt
+example
+docs

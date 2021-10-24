@@ -1,1 +1,1 @@
-export {default} from './svgsaver';
+module.exports = require('./lib/svgsaver');
