@@ -6,8 +6,6 @@ import {saveUri, savePng, createCanvas} from './saveuri';
 import {isDefined, isFunction, isUndefined, isNode} from './utils';
 import FileSaver from 'file-saver';
 
-const isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
-
 // inheritable styles may be overridden by parent, always copy for now
 inheritableAttrs.forEach(function (k) {
   if (k in svgStyles) {
@@ -15,13 +13,20 @@ inheritableAttrs.forEach(function (k) {
   }
 });
 
-export class SvgSaver {
+export interface ISvgSaverSettings {
+  attrs?: unknown;
+  styles?: unknown;
+}
 
-  static getSvg (el) {
+export class SvgSaver {
+  attrs: unknown;
+  styles: unknown;
+
+  static getSvg(el: SVGSVGElement | string): SVGSVGElement {
     if (isUndefined(el) || el === '') {
       el = document.body.querySelector('svg');
     } else if (typeof el === 'string') {
-      el = document.body.querySelector(el);
+      el = document.body.querySelector(el) as SVGSVGElement;
     }
     if (el && el.tagName !== 'svg') {
       el = el.querySelector('svg');
@@ -29,12 +34,17 @@ export class SvgSaver {
     if (!isNode(el)) {
       throw new Error('svgsaver: Can\'t find an svg element');
     }
-    return el;
+
+    return el as SVGSVGElement;
   }
 
-  static getFilename (el, filename, ext) {
+  static getFilename(
+    el: SVGSVGElement,
+    ext: string,
+    filename?: string
+  ): string {
     if (!filename || filename === '') {
-      filename = (el.getAttribute('title') || 'untitled') + '.' + ext;
+      filename = (el.getAttribute('title') ?? 'untitled') + '.' + ext;
     }
     return encodeURI(filename);
   }
@@ -49,7 +59,7 @@ export class SvgSaver {
   * var svg = document.querySelector('#mysvg');         // find the SVG element
   * svgsaver.asSvg(svg);                                // save as SVG
   */
-  constructor ({ attrs, styles } = {}) {
+  constructor({ attrs, styles }: ISvgSaverSettings = {}) {
     this.attrs = (attrs === undefined) ? svgAttrs : attrs;
     this.styles = (styles === undefined) ? svgStyles : styles;
   }
@@ -57,11 +67,11 @@ export class SvgSaver {
   /**
   * Return the cloned SVG after cleaning
   *
-  * @param {SVGElement} el The element to copy.
-  * @returns {SVGElement} SVG text after cleaning
+  * @param el The element to copy.
+  * @returns SVG text after cleaning
   * @api public
   */
-  cloneSVG (el) {
+  cloneSVG(el: SVGSVGElement): SVGSVGElement {
     el = SvgSaver.getSvg(el);
     const svg = cloneSvg(el, this.attrs, this.styles);
 
@@ -79,11 +89,11 @@ export class SvgSaver {
   /**
   * Return the SVG HTML text after cleaning
   *
-  * @param {SVGElement} el The element to copy.
-  * @returns {String} SVG text after cleaning
+  * @param el The element to copy.
+  * @returns SVG text after cleaning
   * @api public
   */
-  getHTML (el) {
+  getHTML(el: SVGSVGElement): string {
     const svg = this.cloneSVG(el);
 
     var html = svg.outerHTML;
@@ -104,11 +114,11 @@ export class SvgSaver {
   /**
   * Return the SVG, after cleaning, as a text/xml Blob
   *
-  * @param {SVGElement} el The element to copy.
-  * @returns {Blog} SVG as a text/xml Blob
+  * @param el The element to copy.
+  * @returns SVG as a text/xml Blob
   * @api public
   */
-  getBlob (el) {
+  getBlob(el: SVGSVGElement): Blob {
     const html = this.getHTML(el);
     return new Blob([html], { type: 'text/xml' });
   }
@@ -116,11 +126,11 @@ export class SvgSaver {
   /**
   * Return the SVG, after cleaning, as a image/svg+xml;base64 URI encoded string
   *
-  * @param {SVGElement} el The element to copy.
-  * @returns {String} SVG as image/svg+xml;base64 URI encoded string
+  * @param el The element to copy.
+  * @returns SVG as image/svg+xml;base64 URI encoded string
   * @api public
   */
-  getUri (el) {
+  getUri(el: SVGSVGElement): string {
     const html = encodeURIComponent(this.getHTML(el));
     if (isDefined(window.btoa)) {
       // see http://stackoverflow.com/questions/23223718/failed-to-execute-btoa-on-window-the-string-to-be-encoded-contains-characte
@@ -132,52 +142,55 @@ export class SvgSaver {
   /**
   * Saves the SVG as a SVG file using method compatible with the browser
   *
-  * @param {SVGElement} el The element to copy.
-  * @param {string} [filename] The filename to save, defaults to the SVG title or 'untitled.svg'
-  * @returns {SvgSaver} The SvgSaver instance
+  * @param el The element to copy.
+  * @param filename The filename to save, defaults to the SVG title or 'untitled.svg'
+  * @returns The SvgSaver instance
   * @api public
   */
-  asSvg (el, filename) {
+  asSvg(el: SVGSVGElement, filename?: string): SvgSaver {
     el = SvgSaver.getSvg(el);
     filename = SvgSaver.getFilename(el, filename, 'svg');
+
     if (isFunction(Blob)) {
-      return FileSaver.saveAs(this.getBlob(el), filename);
+      FileSaver.saveAs(this.getBlob(el), filename);
+      return this;
     }
-    return saveUri(this.getUri(el), filename);
+
+    saveUri(this.getUri(el), filename);
+    return this;
   }
 
   /**
   * Gets the SVG as a PNG data URI.
   *
-  * @param {SVGElement} el The element to copy.
-  * @param {Function} cb Call back called with the PNG data uri.
+  * @param el The element to copy.
+  * @param cb Call back called with the PNG data uri.
   * @api public
   */
-  getPngUri (el, cb) {
-    if (isIE11) {
-      console.error('svgsaver: getPngUri not supported on IE11');
-    }
+  getPngUri(
+    el: SVGSVGElement,
+    cb: (uri: string) => void
+  ) {
     el = SvgSaver.getSvg(el);
     var filename = SvgSaver.getFilename(el, null, 'png');
+
     return createCanvas(this.getUri(el), filename, function (canvas) {
       cb(canvas.toDataURL('image/png'));
-    });
+    })
   }
 
   /**
   * Saves the SVG as a PNG file using method compatible with the browser
   *
-  * @param {SVGElement} el The element to copy.
-  * @param {string} [filename] The filename to save, defaults to the SVG title or 'untitled.png'
-  * @returns {SvgSaver} The SvgSaver instance
+  * @param el The element to copy.
+  * @param filename The filename to save, defaults to the SVG title or 'untitled.png'
+  * @returns The SvgSaver instance
   * @api public
   */
-  asPng (el, filename) {
-    if (isIE11) {
-      console.error('svgsaver: asPng not supported on IE11');
-    }
+  asPng(el: SVGSVGElement, filename?: string) {
     el = SvgSaver.getSvg(el);
     filename = SvgSaver.getFilename(el, filename, 'png');
+
     return savePng(this.getUri(el), filename);
   }
 
