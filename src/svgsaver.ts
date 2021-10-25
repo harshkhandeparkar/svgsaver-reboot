@@ -13,7 +13,7 @@ export class SVGSaver {
    * @example
    * ```ts
    * const saver = new SVGSaver(document.getElementById('svg'));
-   * saver.saveAsPNG('image.png');
+   * await saver.saveAsPNG('image.png'); // asynchronous
    *
    * console.log('saved image with data URL: ', saver.getSVGDataURL());
    * ```
@@ -109,10 +109,11 @@ export class SVGSaver {
   * Saves the SVG as a PNG file.
   *
   * @param filename The name of the file to save, defaults to the SVG title or `untitled.png`.
+  * @async
   */
-  saveAsPNG(filename?: string) {
+  async saveAsPNG(filename?: string) {
     const saveFilename = getFilename(this.svg, filename, 'png');
 
-    savePNG(this.getSVGDataURL(), saveFilename);
+    await savePNG(this.getSVGDataURL(), saveFilename);
   }
 }
