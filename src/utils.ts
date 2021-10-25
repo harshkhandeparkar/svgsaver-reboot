@@ -5,7 +5,7 @@ export const isDefined = (a: any) => typeof a !== 'undefined';
 export const isUndefined = (a: any) => typeof a === 'undefined';
 export const isObject = (a: any) => (a !== null && typeof a === 'object');
 
-export function clone (obj: Object) {
+export function clone(obj: Object) {
   if (obj == null || typeof obj !== 'object') { return obj; }
   const copy = obj.constructor();
   for (const attr in obj) {

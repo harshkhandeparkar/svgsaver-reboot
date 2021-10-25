@@ -5,7 +5,7 @@
     - [x] Move away from `file-saver`
     - [x] Convert all `unknown` types to proper types
     - [x] Fix `any` types
-    - [] Try to use arrow functions
+    - [x] Try to use arrow functions
     - [] Update jsdoc
     - [] Rename uri to DataURL
     - [] Clean up API function names

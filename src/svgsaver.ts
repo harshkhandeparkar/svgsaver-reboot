@@ -1,5 +1,3 @@
-/* global Blob */
-
 import {svgAllowedStyles, svgAllowedAttrs} from './constants';
 import {cloneSvg} from './clonesvg';
 import {saveUri, savePng, loadCanvasImage, saveBlob} from './save';
