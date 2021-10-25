@@ -22,11 +22,6 @@ export class SvgSaver {
   cloneSvg(): SVGSVGElement {
     const svg = cloneSvg(this.svg, svgAllowedAttrs, svgAllowedStyles);
 
-    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-    svg.setAttribute('version', 1.1);
-
-    // height and width needed to download in FireFox
     svg.setAttribute('width', svg.getAttribute('width') || '500');
     svg.setAttribute('height', svg.getAttribute('height') || '900');
 
@@ -46,13 +41,6 @@ export class SvgSaver {
     if (xml) {
       return xml;
     }
-
-    // see http://stackoverflow.com/questions/19610089/unwanted-namespaces-on-svg-markup-when-using-xmlserializer-in-javascript-with-ie
-    this.svg.removeAttribute('xmlns');
-    this.svg.removeAttribute('xmlns:xlink');
-
-    this.svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2000/svg');
-    this.svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xlink', 'http://www.w3.org/1999/xlink');
 
     return (new window.XMLSerializer()).serializeToString(this.svg);
   }

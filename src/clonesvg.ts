@@ -1,5 +1,4 @@
 /* Some utilities for cloning SVGs with inline styles */
-import computedStyles from 'computed-styles';
 import { SVGStyles, svgAllowedAttrs, SVGAttrs } from './constants';
 
 // Removes attributes that are not valid for SVGs
