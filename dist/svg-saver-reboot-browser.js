@@ -14,6 +14,248 @@
 
 	var svgsaver = {};
 
+	var constants = {};
+
+	var __spreadArray = (commonjsGlobal && commonjsGlobal.__spreadArray) || function (to, from, pack) {
+	    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+	        if (ar || !(i in from)) {
+	            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+	            ar[i] = from[i];
+	        }
+	    }
+	    return to.concat(ar || Array.prototype.slice.call(from));
+	};
+	Object.defineProperty(constants, "__esModule", { value: true });
+	constants.SVGAllowedAttrs = constants.SVGAllowedStyles = void 0;
+	/** List of allowed SVG style properties with default values. */
+	constants.SVGAllowedStyles = {
+	    'alignment-baseline': 'auto',
+	    'baseline-shift': 'baseline',
+	    'clip': 'auto',
+	    'clip-path': 'none',
+	    'clip-rule': 'nonzero',
+	    'color': 'rgb(51, 51, 51)',
+	    'color-interpolation': 'srgb',
+	    'color-interpolation-filters': 'linearrgb',
+	    'color-profile': 'auto',
+	    'color-rendering': 'auto',
+	    'cursor': 'auto',
+	    'direction': 'ltr',
+	    'display': 'inline',
+	    'dominant-baseline': 'auto',
+	    'enable-background': '',
+	    'fill': 'rgb(0, 0, 0)',
+	    'fill-opacity': '1',
+	    'fill-rule': 'nonzero',
+	    'filter': 'none',
+	    'flood-color': 'rgb(0, 0, 0)',
+	    'flood-opacity': '1',
+	    'font': '',
+	    'font-family': 'normal',
+	    'font-size': 'medium',
+	    'font-size-adjust': 'auto',
+	    'font-stretch': 'normal',
+	    'font-style': 'normal',
+	    'font-variant': 'normal',
+	    'font-weight': '400',
+	    'glyph-orientation-horizontal': '0deg',
+	    'glyph-orientation-vertical': 'auto',
+	    'image-rendering': 'auto',
+	    'kerning': 'auto',
+	    'letter-spacing': '0',
+	    'lighting-color': 'rgb(255, 255, 255)',
+	    'marker': '',
+	    'marker-end': 'none',
+	    'marker-mid': 'none',
+	    'marker-start': 'none',
+	    'mask': 'none',
+	    'opacity': '1',
+	    'overflow': 'visible',
+	    'paint-order': 'fill',
+	    'pointer-events': 'auto',
+	    'shape-rendering': 'auto',
+	    'stop-color': 'rgb(0, 0, 0)',
+	    'stop-opacity': '1',
+	    'stroke': 'none',
+	    'stroke-dasharray': 'none',
+	    'stroke-dashoffset': '0',
+	    'stroke-linecap': 'butt',
+	    'stroke-linejoin': 'miter',
+	    'stroke-miterlimit': '4',
+	    'stroke-opacity': '1',
+	    'stroke-width': '1',
+	    'text-anchor': 'start',
+	    'text-decoration': 'none',
+	    'text-rendering': 'auto',
+	    'unicode-bidi': 'normal',
+	    'visibility': 'visible',
+	    'word-spacing': '0px',
+	    'writing-mode': 'lr-tb'
+	};
+	/** List of allowed direct SVG attributes. */
+	var SVGDirectAttrs = [
+	    'id', 'xml: base', 'xml: lang', 'xml: space',
+	    'height', 'result', 'width', 'x', 'y',
+	    'xlink: href',
+	    'href',
+	    'style', 'class',
+	    'd', 'pathLength',
+	    'x', 'y', 'dx', 'dy', 'glyphRef', 'format',
+	    'x1', 'y1', 'x2', 'y2',
+	    'rotate', 'textLength',
+	    'cx', 'cy', 'r',
+	    'rx', 'ry',
+	    'fx', 'fy',
+	    'width', 'height',
+	    'refX', 'refY', 'orient',
+	    'markerUnits', 'markerWidth', 'markerHeight',
+	    'maskUnits',
+	    'transform',
+	    'viewBox', 'version',
+	    'preserveAspectRatio', 'xmlns',
+	    'points',
+	    'offset',
+	    'xlink:href'
+	];
+	/** List of allowed inheritable SVG attributes. */
+	var SVGInheritableAttrs = [
+	    'clip-rule',
+	    'color',
+	    'color-interpolation',
+	    'color-interpolation-filters',
+	    'color-profile',
+	    'color-rendering',
+	    'cursor',
+	    'direction',
+	    'fill',
+	    'fill-opacity',
+	    'fill-rule',
+	    'font',
+	    'font-family',
+	    'font-size',
+	    'font-size-adjust',
+	    'font-stretch',
+	    'font-style',
+	    'font-variant',
+	    'font-weight',
+	    'glyph-orientation-horizontal',
+	    'glyph-orientation-vertical',
+	    'image-rendering',
+	    'kerning',
+	    'letter-spacing',
+	    'marker',
+	    'marker-end',
+	    'marker-mid',
+	    'marker-start',
+	    'pointer-events',
+	    'shape-rendering',
+	    'stroke',
+	    'stroke-dasharray',
+	    'stroke-dashoffset',
+	    'stroke-linecap',
+	    'stroke-linejoin',
+	    'stroke-miterlimit',
+	    'stroke-opacity',
+	    'stroke-width',
+	    'text-anchor',
+	    'text-rendering',
+	    'transform',
+	    'visibility',
+	    'white-space',
+	    'word-spacing',
+	    'writing-mode'
+	];
+	/** List of all allowed SVG attributes. */
+	constants.SVGAllowedAttrs = __spreadArray(__spreadArray([], SVGDirectAttrs, true), SVGInheritableAttrs, true);
+
+	var clonesvg = {};
+
+	Object.defineProperty(clonesvg, "__esModule", { value: true });
+	clonesvg.cloneSVG = void 0;
+	/* Some utilities for cloning SVGs with inline styles */
+	var constants_1$1 = constants;
+	/**
+	 * Removes attributes that are not valid for SVGs.
+	 *
+	 * @param el The element to clean.
+	 * @param allowedAttrs List of allowed attributes.
+	 * @param allowedStyles List of allowed style attributes.
+	 */
+	function cleanAttrs(el, allowedAttrs, allowedStyles) {
+	    if (allowedAttrs.length === 0)
+	        return;
+	    for (var i = 0; i < el.attributes.length; i++) {
+	        var attr = el.attributes.item(i);
+	        if (!Object.keys(allowedStyles).includes(attr.name) ||
+	            !allowedAttrs.includes(attr.name))
+	            el.removeAttribute(attr.name);
+	    }
+	}
+	/**
+	 * Cleans style properties of a child SVG element.
+	 * @param tgt Target element to clean.
+	 * @param parentStyles Styles of the parent SVG element.
+	 */
+	function cleanStyle(tgt, parentStyles) {
+	    parentStyles = parentStyles !== null && parentStyles !== void 0 ? parentStyles : tgt.parentElement.style;
+	    constants_1$1.SVGAllowedAttrs.forEach(function (key) {
+	        if (tgt.style[key] === parentStyles[key]) {
+	            tgt.style.removeProperty(key);
+	        }
+	    });
+	}
+	/**
+	 * Copies computed styles form one source element to target element.
+	 *
+	 * @param source Source element.
+	 * @param target Target element.
+	 * @param stylesToCopy List of styles to copy.
+	 */
+	function copyComputedStyles(source, target, stylesToCopy) {
+	    var _a;
+	    var computedStyles = document.defaultView.getComputedStyle(source);
+	    for (var property in stylesToCopy) {
+	        target.style.setProperty(property, (_a = computedStyles[property]) !== null && _a !== void 0 ? _a : stylesToCopy[property]);
+	    }
+	}
+	/**
+	 * Reboot Author: This function was in the code. I still don't fully understand what it does.
+	 *
+	 * @param src who
+	 * @param tgt knows
+	 * @param down probably
+	 * @param up important
+	 */
+	function DOMWalk(src, tgt, down, up) {
+	    down(src, tgt);
+	    var children = src.childNodes;
+	    for (var i = 0; i < children.length; i++) {
+	        DOMWalk(children[i], tgt.childNodes[i], down, up);
+	    }
+	    up(src, tgt);
+	}
+	/**
+	 * Returns a deep clone with cleaned attributes and properties of the source svg.
+	 *
+	 * @param src Source SVG element.
+	 * @param attrs List of allowed attributes.
+	 * @param styles List of allowed styles.
+	 */
+	function cloneSVG(src, attrs, styles) {
+	    var clonedSVG = src.cloneNode(true);
+	    DOMWalk(src, clonedSVG, function (src, tgt) {
+	        if (tgt.style)
+	            copyComputedStyles(src, tgt, styles);
+	    }, function (src, tgt) {
+	        if (tgt.style && tgt.parentNode)
+	            cleanStyle(tgt);
+	        if (tgt.attributes)
+	            cleanAttrs(tgt, attrs, styles);
+	    });
+	    return clonedSVG;
+	}
+	clonesvg.cloneSVG = cloneSVG;
+
 	var save = {};
 
 	var utils = {};
@@ -189,6 +431,8 @@
 	};
 	Object.defineProperty(svgsaver, "__esModule", { value: true });
 	svgsaver.SVGSaver = void 0;
+	var constants_1 = constants;
+	var clonesvg_1 = clonesvg;
 	var save_1 = save;
 	var utils_1 = utils;
 	var SVGSaver = /** @class */ (function () {
@@ -205,8 +449,16 @@
 	     * ```
 	     */
 	    function SVGSaver(svg) {
-	        this.svg = svg;
+	        this.loadNewSVG(svg);
 	    }
+	    /**
+	     * Load a different SVG.
+	     *
+	     * @param svg New SVG to load.
+	     */
+	    SVGSaver.prototype.loadNewSVG = function (svg) {
+	        this.svg = (0, clonesvg_1.cloneSVG)(svg, constants_1.SVGAllowedAttrs, constants_1.SVGAllowedStyles);
+	    };
 	    /**
 	    * Returns the SVG text after cleaning
 	    *
