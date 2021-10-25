@@ -2,7 +2,7 @@
 
 import {svgAttrs, svgStyles, inheritableAttrs} from './collection';
 import {cloneSvg} from './clonesvg';
-import {saveUri, savePng, createCanvas} from './saveuri';
+import {saveUri, savePng, loadCanvasImage, saveBlob} from './saveuri';
 import {isDefined, isFunction, isUndefined, isNode} from './utils';
 
 // inheritable styles may be overridden by parent, always copy for now
@@ -133,7 +133,7 @@ export class SvgSaver {
     const saveFilename = SvgSaver.getFilename(el, filename, 'svg');
 
     if (isFunction(Blob)) {
-      FileSaver.saveAs(this.getBlob(el), saveFilename);
+      saveBlob(this.getBlob(el), saveFilename);
       return this;
     }
 
@@ -152,12 +152,10 @@ export class SvgSaver {
     el: SVGSVGElement,
     cb: (uri: string) => void
   ) {
-    el = SvgSaver.getSvg(el);
-    const filename = SvgSaver.getFilename(el, null, 'png');
-
-    return createCanvas(this.getUri(el), filename, function (canvas) {
-      cb(canvas.toDataURL('image/png'));
-    })
+    return loadCanvasImage(
+      this.getUri(el),
+      (canvas) =>  cb(canvas.toDataURL('image/png'))
+    )
   }
 
   /**
@@ -169,10 +167,9 @@ export class SvgSaver {
   * @api public
   */
   asPng(el: SVGSVGElement, filename?: string) {
-    el = SvgSaver.getSvg(el);
-    filename = SvgSaver.getFilename(el, filename, 'png');
+    const saveFilename = SvgSaver.getFilename(el, filename, 'png');
 
-    return savePng(this.getUri(el), filename);
+    return savePng(this.getUri(el), saveFilename);
   }
 
 }

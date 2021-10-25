@@ -1,56 +1,51 @@
-/* global Image, MouseEvent */
+import { isDefined } from './utils';
 
-/* Some simple utilities for saving SVGs, including an alternative to saveAs */
+export function saveUri(uri: string, name: string) {
+  const dl = document.createElement('a');
 
-import {isDefined} from './utils';
-import FileSaver from 'file-saver';
+  dl.setAttribute('href', uri);
+  dl.setAttribute('download', name);
 
-// detection
-const DownloadAttributeSupport = (typeof document !== 'undefined') &&
-  ('download' in document.createElement('a')) &&
-  (typeof MouseEvent === 'function');
-
-export function saveUri (uri, name) {
-  if (DownloadAttributeSupport) {
-    const dl = document.createElement('a');
-    dl.setAttribute('href', uri);
-    dl.setAttribute('download', name);
-    // firefox doesn't support `.click()`...
-    // from https://github.com/sindresorhus/multi-download/blob/gh-pages/index.js
-    dl.dispatchEvent(new MouseEvent('click'));
-    return true;
-  } else if (typeof window !== 'undefined') {
-    window.open(uri, '_blank', '');
-    return true;
-  }
-
-  return false;
+  dl.dispatchEvent(new MouseEvent('click'));
+  return true;
 }
 
-export function createCanvas (uri, name, cb) {
+export function loadCanvasImage(
+  uri: string,
+  cb: (canvas: HTMLCanvasElement) => void
+) {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
 
   const image = new Image();
-  image.onload = function () {
+
+  image.onload = () => {
     canvas.width = image.width;
     canvas.height = image.height;
     context.drawImage(image, 0, 0);
 
     cb(canvas);
-  };
+  }
+
   image.src = uri;
   return true;
 }
 
-export function savePng (uri, name) {
-  return createCanvas(uri, name, function (canvas) {
-    if (isDefined(canvas.toBlob)) {
-      canvas.toBlob(function (blob) {
-        FileSaver.saveAs(blob, name);
-      });
-    } else {
-      saveUri(canvas.toDataURL('image/png'), name);
+export function savePng(uri: string, name: string) {
+  return loadCanvasImage(
+    uri,
+    (canvas: HTMLCanvasElement) => {
+      if (isDefined(canvas.toBlob)) {
+        canvas.toBlob((blob) => {
+          saveBlob(blob, name);
+        })
+      } else {
+        saveUri(canvas.toDataURL('image/png'), name);
+      }
     }
-  });
+  )
+}
+
+export function saveBlob(blob: Blob, name: string) {
+  return saveUri(URL.createObjectURL(blob), name);
 }
