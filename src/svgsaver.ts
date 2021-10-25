@@ -1,25 +1,11 @@
 /* global Blob */
 
-import {svgStyles, inheritableAttrs} from './collection';
+import {svgAllowedStyles, svgAllowedAttrs} from './constants';
 import {cloneSvg} from './clonesvg';
-import {saveUri, savePng, loadCanvasImage, saveBlob} from './saveuri';
+import {saveUri, savePng, loadCanvasImage, saveBlob} from './save';
 import {isDefined, isFunction, getFilename} from './utils';
 
-// inheritable styles may be overridden by parent, always copy for now
-inheritableAttrs.forEach(function (k) {
-  if (k in svgStyles) {
-    svgStyles[k] = true;
-  }
-});
-
-export interface ISvgSaverSettings {
-  attrs?: unknown;
-  styles?: unknown;
-}
-
 export class SvgSaver {
-  attrs: unknown;
-  styles: unknown;
   svg: SVGSVGElement
 
   constructor(svg: SVGSVGElement) {
@@ -33,8 +19,8 @@ export class SvgSaver {
   * @returns SVG text after cleaning
   * @api public
   */
-  cloneSvg(el: SVGSVGElement): SVGSVGElement {
-    const svg = cloneSvg(el, this.attrs, this.styles);
+  cloneSvg(): SVGSVGElement {
+    const svg = cloneSvg(this.svg, svgAllowedAttrs, svgAllowedStyles);
 
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');

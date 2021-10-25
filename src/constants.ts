@@ -1,4 +1,8 @@
-export const svgStyles = {   // Whitelist of CSS styles and default values
+type DefaultValue = string;
+export type SVGStyles = {
+  [propertyName: string]: DefaultValue
+}
+export const svgAllowedStyles: SVGStyles = {   // list of allowed CSS styles and default values
   'alignment-baseline': 'auto',
   'baseline-shift': 'baseline',
   'clip': 'auto',
@@ -63,7 +67,9 @@ export const svgStyles = {   // Whitelist of CSS styles and default values
   'writing-mode': 'lr-tb'
 };
 
-export const svgAttrs = [  // white list of attributes
+export type SVGAttrs = string[];
+
+const svgAttrs: SVGAttrs = [  // list of allowed attributes on SVG
   'id', 'xml: base', 'xml: lang', 'xml: space', // Core
   'height', 'result', 'width', 'x', 'y',     // Primitive
   'xlink: href',                              // Xlink attribute
@@ -88,9 +94,7 @@ export const svgAttrs = [  // white list of attributes
   'xlink:href'
 ];
 
-// http://www.w3.org/TR/SVG/propidx.html
-// via https://github.com/svg/svgo/blob/master/plugins/_collections.js
-export const inheritableAttrs = [
+const inheritableAttrs: SVGAttrs = [
   'clip-rule',
   'color',
   'color-interpolation',
@@ -137,3 +141,5 @@ export const inheritableAttrs = [
   'word-spacing',
   'writing-mode'
 ];
+
+export const svgAllowedAttrs: SVGAttrs = [...svgAttrs, ...inheritableAttrs];

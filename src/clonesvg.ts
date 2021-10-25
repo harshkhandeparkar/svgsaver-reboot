@@ -1,22 +1,23 @@
 /* Some utilities for cloning SVGs with inline styles */
 import computedStyles from 'computed-styles';
-import {isUndefined} from './utils';
-import {inheritableAttrs} from './collection';
+import {} from './constants';
 
 // Removes attributes that are not valid for SVGs
-function cleanAttrs (el, attrs, styles) {  // attrs === false - remove all, attrs === true - allow all
-  if (attrs === true) { return; }
+function cleanAttrs(
+  el: SVGSVGElement,
+  allowedAttrs: string[],
+  allowedStyles: SVGStyles
+) {
+  if (allowedAttrs.length === 0) return;
 
-  Array.prototype.slice.call(el.attributes)
-    .forEach(function (attr) {
-      // remove if it is not style nor on attrs  whitelist
-      // keeping attributes that are also styles because attributes override
-      if (attr.specified) {
-        if (attrs === '' || attrs === false || (isUndefined(styles[attr.name]) && attrs.indexOf(attr.name) < 0)) {
-          el.removeAttribute(attr.name);
-        }
-      }
-    });
+  for (let i = 0; i < el.attributes.length; i++) {
+    let attr = el.attributes.item(i);
+
+    if (
+      !Object.keys(allowedStyles).includes(attr.name) ||
+      !allowedAttrs.includes(attr.name)
+    ) el.removeAttribute(attr.name);
+  }
 }
 
 function cleanStyle (tgt, parentStyles) {
