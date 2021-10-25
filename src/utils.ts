@@ -20,3 +20,14 @@ export function isNode(val: any) {
   if (isDefined(window) && isObject(window.Node)) { return val instanceof window.Node; }
   return typeof val.nodeType === 'number' && typeof val.nodeName === 'string';
 }
+
+export function getFilename(
+  el: SVGSVGElement,
+  ext: string,
+  filename?: string
+): string {
+  if (!filename || filename === '') {
+    filename = (el.getAttribute('title') ?? 'untitled') + '.' + ext;
+  }
+  return encodeURI(filename);
+}

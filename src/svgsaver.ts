@@ -1,9 +1,9 @@
 /* global Blob */
 
-import {svgAttrs, svgStyles, inheritableAttrs} from './collection';
+import {svgStyles, inheritableAttrs} from './collection';
 import {cloneSvg} from './clonesvg';
 import {saveUri, savePng, loadCanvasImage, saveBlob} from './saveuri';
-import {isDefined, isFunction, isUndefined, isNode} from './utils';
+import {isDefined, isFunction, getFilename} from './utils';
 
 // inheritable styles may be overridden by parent, always copy for now
 inheritableAttrs.forEach(function (k) {
@@ -20,31 +20,10 @@ export interface ISvgSaverSettings {
 export class SvgSaver {
   attrs: unknown;
   styles: unknown;
+  svg: SVGSVGElement
 
-  static getFilename(
-    el: SVGSVGElement,
-    ext: string,
-    filename?: string
-  ): string {
-    if (!filename || filename === '') {
-      filename = (el.getAttribute('title') ?? 'untitled') + '.' + ext;
-    }
-    return encodeURI(filename);
-  }
-
-  /**
-  * SvgSaver constructor.
-  * @constructs SvgSaver
-  * @api public
-  *
-  * @example
-  * const svgsaver = new SvgSaver();                      // creates a new instance
-  * const svg = document.querySelector('#mysvg');         // find the SVG element
-  * svgsaver.asSvg(svg);                                // save as SVG
-  */
-  constructor({ attrs, styles }: ISvgSaverSettings = {}) {
-    this.attrs = (attrs === undefined) ? svgAttrs : attrs;
-    this.styles = (styles === undefined) ? svgStyles : styles;
+  constructor(svg: SVGSVGElement) {
+    this.svg = svg;
   }
 
   /**
@@ -54,7 +33,7 @@ export class SvgSaver {
   * @returns SVG text after cleaning
   * @api public
   */
-  cloneSVG(el: SVGSVGElement): SVGSVGElement {
+  cloneSvg(el: SVGSVGElement): SVGSVGElement {
     const svg = cloneSvg(el, this.attrs, this.styles);
 
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -69,40 +48,39 @@ export class SvgSaver {
   }
 
   /**
-  * Return the SVG HTML text after cleaning
+  * Return the SVG text after cleaning
   *
   * @param el The element to copy.
   * @returns SVG text after cleaning
   * @api public
   */
-  getHTML(el: SVGSVGElement): string {
-    const svg = this.cloneSVG(el);
+  getSvg(): string {
+    const xml = this.svg.outerHTML;
 
-    const html = svg.outerHTML;
-    if (html) {
-      return html;
+    if (xml) {
+      return xml;
     }
 
     // see http://stackoverflow.com/questions/19610089/unwanted-namespaces-on-svg-markup-when-using-xmlserializer-in-javascript-with-ie
-    svg.removeAttribute('xmlns');
-    svg.removeAttribute('xmlns:xlink');
+    this.svg.removeAttribute('xmlns');
+    this.svg.removeAttribute('xmlns:xlink');
 
-    svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2000/svg');
-    svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xlink', 'http://www.w3.org/1999/xlink');
+    this.svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2000/svg');
+    this.svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xlink', 'http://www.w3.org/1999/xlink');
 
-    return (new window.XMLSerializer()).serializeToString(svg);
+    return (new window.XMLSerializer()).serializeToString(this.svg);
   }
 
   /**
   * Return the SVG, after cleaning, as a text/xml Blob
   *
-  * @param el The element to copy.
   * @returns SVG as a text/xml Blob
   * @api public
   */
-  getBlob(el: SVGSVGElement): Blob {
-    const html = this.getHTML(el);
-    return new Blob([html], { type: 'text/xml' });
+  getSvgBlob(): Blob {
+    const xml = this.getSvg();
+
+    return new Blob([xml], { type: 'text/xml' });
   }
 
   /**
@@ -112,13 +90,14 @@ export class SvgSaver {
   * @returns SVG as image/svg+xml;base64 URI encoded string
   * @api public
   */
-  getUri(el: SVGSVGElement): string {
-    const html = encodeURIComponent(this.getHTML(el));
+  getSvgUri(): string {
+    const xml = encodeURIComponent(this.getSvg());
+
     if (isDefined(window.btoa)) {
       // see http://stackoverflow.com/questions/23223718/failed-to-execute-btoa-on-window-the-string-to-be-encoded-contains-characte
-      return 'data:image/svg+xml;base64,' + window.btoa(unescape(html));
+      return 'data:image/svg+xml;base64,' + window.btoa(unescape(xml));
     }
-    return 'data:image/svg+xml,' + html;
+    return 'data:image/svg+xml,' + xml;
   }
 
   /**
@@ -129,15 +108,15 @@ export class SvgSaver {
   * @returns The SvgSaver instance
   * @api public
   */
-  asSvg(el: SVGSVGElement, filename?: string): SvgSaver {
-    const saveFilename = SvgSaver.getFilename(el, filename, 'svg');
+  saveAsSvg(filename?: string): SvgSaver {
+    const saveFilename = getFilename(this.svg, filename, 'svg');
 
     if (isFunction(Blob)) {
-      saveBlob(this.getBlob(el), saveFilename);
+      saveBlob(this.getSvgBlob(), saveFilename);
       return this;
     }
 
-    saveUri(this.getUri(el), saveFilename);
+    saveUri(this.getSvgUri(), saveFilename);
     return this;
   }
 
@@ -148,12 +127,9 @@ export class SvgSaver {
   * @param cb Call back called with the PNG data uri.
   * @api public
   */
-  getPngUri(
-    el: SVGSVGElement,
-    cb: (uri: string) => void
-  ) {
+  getPngUri(cb: (uri: string) => void) {
     return loadCanvasImage(
-      this.getUri(el),
+      this.getSvgUri(),
       (canvas) =>  cb(canvas.toDataURL('image/png'))
     )
   }
@@ -166,10 +142,10 @@ export class SvgSaver {
   * @returns The SvgSaver instance
   * @api public
   */
-  asPng(el: SVGSVGElement, filename?: string) {
-    const saveFilename = SvgSaver.getFilename(el, filename, 'png');
+  saveAsPng(filename?: string) {
+    const saveFilename = getFilename(this.svg, filename, 'png');
 
-    return savePng(this.getUri(el), saveFilename);
+    return savePng(this.getSvgUri(), saveFilename);
   }
 
 }
