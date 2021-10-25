@@ -449,7 +449,7 @@
 	     * ```
 	     */
 	    function SVGSaver(svg) {
-	        this.loadNewSVG(svg);
+	        this.loadNewSVG(svg !== null && svg !== void 0 ? svg : document.createElementNS('http://www.w3.org/2000/svg', 'svg'));
 	    }
 	    /**
 	     * Load a different SVG.
