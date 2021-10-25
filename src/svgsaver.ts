@@ -19,7 +19,16 @@ export class SVGSaver {
    * ```
    */
   constructor(svg: SVGSVGElement) {
-    this.svg = svg;
+    this.loadNewSVG(svg);
+  }
+
+  /**
+   * Load a different SVG.
+   *
+   * @param svg New SVG to load.
+   */
+  loadNewSVG(svg: SVGSVGElement) {
+    this.svg = cloneSVG(svg, SVGAllowedAttrs, SVGAllowedStyles);
   }
 
   /**
