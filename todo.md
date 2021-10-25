@@ -3,8 +3,8 @@
 - [] Typescriptify using rollup
     - [x] Convert var to let and const
     - [x] Move away from `file-saver`
-    - [] Convert all `unknown` types to proper types
-    - [] Fix `any` types
+    - [x] Convert all `unknown` types to proper types
+    - [x] Fix `any` types
     - [] Try to use arrow functions
     - [] Update jsdoc
     - [] Rename uri to DataURL
