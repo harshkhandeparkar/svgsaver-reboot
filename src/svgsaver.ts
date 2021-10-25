@@ -134,6 +134,13 @@ export class SvgSaver {
     )
   }
 
+  getPngBlob(cb: (blob: Blob) => void) {
+    return loadCanvasImage(
+      this.getSvgUri(),
+      (canvas) => canvas.toBlob(cb, 'image/png')
+    )
+  }
+
   /**
   * Saves the SVG as a PNG file using method compatible with the browser
   *
