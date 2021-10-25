@@ -11,3 +11,4 @@
     - [x] Convert callbacks to promise/async_await
 - [] rollup
 - [] Use typedoc for documentation
+- [] update readme

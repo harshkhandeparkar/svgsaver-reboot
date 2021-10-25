@@ -5,6 +5,9 @@
 
 **NOTE: THIS LIBRARY IS NOT READY FOR PRODUCTION AND IS ONLY USED INTERNALLY IN [rainbow-board](https://github.com/harshkhandeparkar/rainbow-board).**
 
+### What is Different From Original
+\[TBD\]
+
 Download an SVG element as an SVG or PNG file, including CSS defined styles.
 
 [![NPM version][npm-badge]][npm]
