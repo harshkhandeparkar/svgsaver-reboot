@@ -1,1 +1,1 @@
-export { SvgSaver } from './svgsaver';
+export { SVGSaver } from './svgsaver';

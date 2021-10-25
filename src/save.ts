@@ -31,7 +31,7 @@ export function loadCanvasImage(
   return true;
 }
 
-export function savePng(dataURL: string, name: string) {
+export function savePNG(dataURL: string, name: string) {
   return loadCanvasImage(
     dataURL,
     (canvas: HTMLCanvasElement) => {

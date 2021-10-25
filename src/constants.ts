@@ -2,7 +2,7 @@ type DefaultValue = string;
 export type SVGStyles = {
   [propertyName: string]: DefaultValue
 }
-export const svgAllowedStyles: SVGStyles = {   // list of allowed CSS styles and default values
+export const SVGAllowedStyles: SVGStyles = {   // list of allowed CSS styles and default values
   'alignment-baseline': 'auto',
   'baseline-shift': 'baseline',
   'clip': 'auto',
@@ -69,7 +69,7 @@ export const svgAllowedStyles: SVGStyles = {   // list of allowed CSS styles and
 
 export type SVGAttrs = string[];
 
-const svgAttrs: SVGAttrs = [  // list of allowed attributes on SVG
+const SVGDirectAttrs: SVGAttrs = [  // list of allowed attributes on SVG
   'id', 'xml: base', 'xml: lang', 'xml: space', // Core
   'height', 'result', 'width', 'x', 'y',     // Primitive
   'xlink: href',                              // Xlink attribute
@@ -94,7 +94,7 @@ const svgAttrs: SVGAttrs = [  // list of allowed attributes on SVG
   'xlink:href'
 ];
 
-const inheritableAttrs: SVGAttrs = [
+const SVGInheritableAttrs: SVGAttrs = [
   'clip-rule',
   'color',
   'color-interpolation',
@@ -142,4 +142,4 @@ const inheritableAttrs: SVGAttrs = [
   'writing-mode'
 ];
 
-export const svgAllowedAttrs: SVGAttrs = [...svgAttrs, ...inheritableAttrs];
+export const SVGAllowedAttrs: SVGAttrs = [...SVGDirectAttrs, ...SVGInheritableAttrs];

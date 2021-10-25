@@ -1,10 +1,10 @@
-import {svgAllowedStyles, svgAllowedAttrs} from './constants';
-import {cloneSvg} from './clonesvg';
-import {saveDataURL, savePng, loadCanvasImage, saveBlob} from './save';
-import {isDefined, isFunction, getFilename} from './utils';
+import { SVGAllowedAttrs, SVGAllowedStyles } from './constants';
+import { cloneSVG } from './clonesvg';
+import { saveDataURL, savePNG, loadCanvasImage, saveBlob } from './save';
+import { isDefined, isFunction, getFilename } from './utils';
 
-export class SvgSaver {
-  svg: SVGSVGElement
+export class SVGSaver {
+  svg: SVGSVGElement;
 
   constructor(svg: SVGSVGElement) {
     this.svg = svg;
@@ -17,8 +17,8 @@ export class SvgSaver {
   * @returns SVG text after cleaning
   * @api public
   */
-  cloneSvg(): SVGSVGElement {
-    const svg = cloneSvg(this.svg, svgAllowedAttrs, svgAllowedStyles);
+  cloneSVG(): SVGSVGElement {
+    const svg = cloneSVG(this.svg, SVGAllowedAttrs, SVGAllowedStyles);
 
     svg.setAttribute('width', svg.getAttribute('width') || '500');
     svg.setAttribute('height', svg.getAttribute('height') || '900');
@@ -33,7 +33,7 @@ export class SvgSaver {
   * @returns SVG text after cleaning
   * @api public
   */
-  getSvg(): string {
+  getSVG(): string {
     const xml = this.svg.outerHTML;
 
     if (xml) {
@@ -49,8 +49,8 @@ export class SvgSaver {
   * @returns SVG as a text/xml Blob
   * @api public
   */
-  getSvgBlob(): Blob {
-    const xml = this.getSvg();
+  getSVGBlob(): Blob {
+    const xml = this.getSVG();
 
     return new Blob([xml], { type: 'text/xml' });
   }
@@ -62,8 +62,8 @@ export class SvgSaver {
   * @returns SVG as image/svg+xml;base64 encoded string
   * @api public
   */
-  getSvgDataURL(): string {
-    const xml = encodeURIComponent(this.getSvg());
+  getSVGDataURL(): string {
+    const xml = encodeURIComponent(this.getSVG());
 
     if (isDefined(window.btoa)) {
       // see http://stackoverflow.com/questions/23223718/failed-to-execute-btoa-on-window-the-string-to-be-encoded-contains-characte
@@ -80,15 +80,15 @@ export class SvgSaver {
   * @returns The SvgSaver instance
   * @api public
   */
-  saveAsSvg(filename?: string): SvgSaver {
+  saveAsSVG(filename?: string): SVGSaver {
     const saveFilename = getFilename(this.svg, filename, 'svg');
 
     if (isFunction(Blob)) {
-      saveBlob(this.getSvgBlob(), saveFilename);
+      saveBlob(this.getSVGBlob(), saveFilename);
       return this;
     }
 
-    saveDataURL(this.getSvgDataURL(), saveFilename);
+    saveDataURL(this.getSVGDataURL(), saveFilename);
     return this;
   }
 
@@ -99,16 +99,16 @@ export class SvgSaver {
   * @param cb Call back called with the PNG data URL.
   * @api public
   */
-  getPngDataURL(cb: (dataURL: string) => void) {
+  getPNGDataURL(cb: (dataURL: string) => void) {
     return loadCanvasImage(
-      this.getSvgDataURL(),
+      this.getSVGDataURL(),
       (canvas) =>  cb(canvas.toDataURL('image/png'))
     )
   }
 
-  getPngBlob(cb: (blob: Blob) => void) {
+  getPNGBlob(cb: (blob: Blob) => void) {
     return loadCanvasImage(
-      this.getSvgDataURL(),
+      this.getSVGDataURL(),
       (canvas) => canvas.toBlob(cb, 'image/png')
     )
   }
@@ -121,12 +121,12 @@ export class SvgSaver {
   * @returns The SvgSaver instance
   * @api public
   */
-  saveAsPng(filename?: string) {
+  saveAsPNG(filename?: string) {
     const saveFilename = getFilename(this.svg, filename, 'png');
 
-    return savePng(this.getSvgDataURL(), saveFilename);
+    return savePNG(this.getSVGDataURL(), saveFilename);
   }
 
 }
 
-export default SvgSaver;
+export default SVGSaver;

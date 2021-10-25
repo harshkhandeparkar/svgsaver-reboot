@@ -1,14 +1,15 @@
 # Todo list
 
-- [] Typescriptify using rollup
+- [] Reboot
     - [x] Convert var to let and const
     - [x] Move away from `file-saver`
     - [x] Convert all `unknown` types to proper types
     - [x] Fix `any` types
     - [x] Try to use arrow functions
     - [x] Rename uri to DataURL
-    - [] Update jsdoc
+    - [] Clean, Update jsdoc/comments
     - [] Clean up API function names
     - [] Clean up functions
-- [] Node compatibility
+
+- [] rollup
 - [] Use typedoc for documentation

@@ -1,5 +1,5 @@
 /* Some utilities for cloning SVGs with inline styles */
-import { SVGStyles, svgAllowedAttrs, SVGAttrs } from './constants';
+import { SVGStyles, SVGAllowedAttrs, SVGAttrs } from './constants';
 
 // Removes attributes that are not valid for SVGs
 function cleanAttrs(
@@ -25,7 +25,7 @@ function cleanStyle(
 ) {
   parentStyles = parentStyles ?? tgt.parentElement.style;
 
-  svgAllowedAttrs.forEach((key) => {
+  SVGAllowedAttrs.forEach((key) => {
     if (tgt.style[key] === parentStyles[key]) {
       tgt.style.removeProperty(key);
     }
@@ -44,7 +44,7 @@ function copyComputedStyles(
   }
 }
 
-function domWalk(
+function DOMWalk(
   src: SVGElement,
   tgt: SVGElement,
   down: (src: SVGElement, tgt: SVGElement) => void,
@@ -54,22 +54,22 @@ function domWalk(
   const children = src.childNodes as NodeListOf<SVGElement>;
 
   for (let i = 0; i < children.length; i++) {
-    domWalk(children[i], tgt.childNodes[i] as SVGElement, down, up);
+    DOMWalk(children[i], tgt.childNodes[i] as SVGElement, down, up);
   }
 
   up(src, tgt);
 }
 
-export function cloneSvg(
+export function cloneSVG(
   src: SVGSVGElement,
   attrs: SVGAttrs,
   styles: SVGStyles
 ) {
-  const clonedSvg: SVGSVGElement = src.cloneNode(true) as SVGSVGElement;
+  const clonedSVG: SVGSVGElement = src.cloneNode(true) as SVGSVGElement;
 
-  domWalk(
+  DOMWalk(
     src,
-    clonedSvg,
+    clonedSVG,
     (src: SVGElement, tgt: SVGElement) => {
       if (tgt.style) copyComputedStyles(src, tgt, styles)
     },
@@ -80,5 +80,5 @@ export function cloneSvg(
     }
   )
 
-  return clonedSvg;
+  return clonedSVG;
 }
