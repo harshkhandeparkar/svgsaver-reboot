@@ -13,3 +13,5 @@ export function getFilename(
   }
   return encodeURI(filename);
 }
+
+export type PromiseResolve<T> = (t: T) => void;

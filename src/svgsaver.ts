@@ -1,7 +1,7 @@
 import { SVGAllowedAttrs, SVGAllowedStyles } from './constants';
 import { cloneSVG } from './clonesvg';
 import { saveDataURL, savePNG, loadCanvasImage, saveBlob } from './save';
-import { isDefined, isFunction, getFilename } from './utils';
+import { isDefined, isFunction, getFilename, PromiseResolve } from './utils';
 
 export class SVGSaver {
   svg: SVGSVGElement;
@@ -82,25 +82,26 @@ export class SVGSaver {
   /**
   * Gets the PNG dataURL of the SVG.
   *
-  * @param cb Callback called with the PNG data URL.
+  * @async Returns a promise that resolves with the PNG data URL.
   */
-  getPNGDataURL(cb: (dataURL: string) => void) {
-    return loadCanvasImage(
-      this.getSVGDataURL(),
-      (canvas) =>  cb(canvas.toDataURL('image/png'))
-    )
+  async getPNGDataURL() {
+    const canvas = await loadCanvasImage(this.getSVGDataURL())
+
+    return canvas.toDataURL('image/png');
   }
 
   /**
    * Gets the PNG Blob of the SVG.
    *
-   * @param cb Callback called with the PNG Blob.
-   * @returns
+   * @async Returns a promise that resolves with the PNG Blob.
    */
-  getPNGBlob(cb: (blob: Blob) => void) {
-    return loadCanvasImage(
-      this.getSVGDataURL(),
-      (canvas) => canvas.toBlob(cb, 'image/png')
+  async getPNGBlob() {
+    const canvas = await loadCanvasImage(this.getSVGDataURL());
+
+    return new Promise(
+      (resolve: PromiseResolve<Blob>) => {
+        canvas.toBlob(resolve, 'image/png');
+      }
     )
   }
 

@@ -1,4 +1,4 @@
-import { isDefined } from './utils';
+import { isDefined, PromiseResolve } from './utils';
 
 /**
  * Saves a file from its dataURL.
@@ -16,34 +16,33 @@ export function saveDataURL(
   dl.setAttribute('download', name);
 
   dl.dispatchEvent(new MouseEvent('click'));
-  return true;
 }
 
 /**
  * Loads an image into a canvas from its dataURL.
  *
+ * @async Returns a promise which resolves with the canvas element after the image is loaded.
  * @param dataURL dataURL of the image to be saved.
- * @param cb Callback called with the canvas after the image is loaded.
  */
-export function loadCanvasImage(
-  dataURL: string,
-  cb: (canvas: HTMLCanvasElement) => void
-) {
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
+export async function loadCanvasImage(dataURL: string) {
+  return new Promise(
+    (resolve: PromiseResolve<HTMLCanvasElement>) => {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
 
-  const image = new Image();
+      const image = new Image();
 
-  image.onload = () => {
-    canvas.width = image.width;
-    canvas.height = image.height;
-    context.drawImage(image, 0, 0);
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0);
 
-    cb(canvas);
-  }
+        resolve(canvas);
+      }
 
-  image.src = dataURL;
-  return true;
+      image.src = dataURL;
+    }
+  )
 }
 
 /**
@@ -51,22 +50,26 @@ export function loadCanvasImage(
  *
  * @param dataURL dataURL of the image to be saved.
  * @param name Name of the file to be saved.
+ * @async
  */
-export function savePNG(dataURL: string, name: string) {
-  return loadCanvasImage(
-    dataURL,
-    (canvas: HTMLCanvasElement) => {
-      if (isDefined(canvas.toBlob)) {
-        canvas.toBlob((blob) => {
-          saveBlob(blob, name);
-        })
-      } else {
-        saveDataURL(canvas.toDataURL('image/png'), name);
-      }
-    }
-  )
+export async function savePNG(dataURL: string, name: string) {
+  const canvas = await loadCanvasImage(dataURL);
+
+  if (isDefined(canvas.toBlob)) {
+    canvas.toBlob((blob) => {
+      saveBlob(blob, name);
+    })
+  } else {
+    saveDataURL(canvas.toDataURL('image/png'), name);
+  }
 }
 
+/**
+ * Saves a file from its Blob.
+ *
+ * @param blob
+ * @param name The name of the file to be saved.
+ */
 export function saveBlob(blob: Blob, name: string) {
-  return saveDataURL(URL.createObjectURL(blob), name);
+  saveDataURL(URL.createObjectURL(blob), name);
 }
