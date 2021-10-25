@@ -1,10 +1,10 @@
 /* Some utilities for cloning SVGs with inline styles */
 import computedStyles from 'computed-styles';
-import {} from './constants';
+import { SVGStyles, svgAllowedAttrs, SVGAttrs } from './constants';
 
 // Removes attributes that are not valid for SVGs
 function cleanAttrs(
-  el: SVGSVGElement,
+  el: SVGElement,
   allowedAttrs: string[],
   allowedStyles: SVGStyles
 ) {
@@ -20,35 +20,66 @@ function cleanAttrs(
   }
 }
 
-function cleanStyle (tgt, parentStyles) {
-  parentStyles = parentStyles || tgt.parentNode.style;
-  inheritableAttrs.forEach(function (key) {
+function cleanStyle(
+  tgt: SVGElement,
+  parentStyles?: CSSStyleDeclaration
+) {
+  parentStyles = parentStyles ?? tgt.parentElement.style;
+
+  svgAllowedAttrs.forEach((key) => {
     if (tgt.style[key] === parentStyles[key]) {
       tgt.style.removeProperty(key);
     }
-  });
+  })
 }
 
-function domWalk (src, tgt, down, up) {
+function copyComputedStyles(
+  source: HTMLElement | SVGElement,
+  target: HTMLElement | SVGElement,
+  stylesToCopy: SVGStyles
+) {
+  const computedStyles = document.defaultView.getComputedStyle(source);
+
+  for (let property in stylesToCopy) {
+    target.style.setProperty(property, computedStyles[property] ?? stylesToCopy[property]);
+  }
+}
+
+function domWalk(
+  src: SVGElement,
+  tgt: SVGElement,
+  down: (src: SVGElement, tgt: SVGElement) => void,
+  up: (src: SVGElement, tgt: SVGElement) => void
+) {
   down(src, tgt);
-  const children = src.childNodes;
+  const children = src.childNodes as NodeListOf<SVGElement>;
 
   for (let i = 0; i < children.length; i++) {
-    domWalk(children[i], tgt.childNodes[i], down, up);
+    domWalk(children[i], tgt.childNodes[i] as SVGElement, down, up);
   }
+
   up(src, tgt);
 }
 
-// Clones an SVGElement, copies approprate atttributes and styles.
-export function cloneSvg(src, attrs, styles) {
-  const clonedSvg = src.cloneNode(true);
+export function cloneSvg(
+  src: SVGSVGElement,
+  attrs: SVGAttrs,
+  styles: SVGStyles
+) {
+  const clonedSvg: SVGSVGElement = src.cloneNode(true) as SVGSVGElement;
 
-  domWalk(src, clonedSvg, (src, tgt) => {
-    if (tgt.style) { computedStyles(src, tgt.style, styles); }
-  }, (src, tgt) => {
-    if (tgt.style && tgt.parentNode) { cleanStyle(tgt); }
-    if (tgt.attributes) { cleanAttrs(tgt, attrs, styles); }
-  });
+  domWalk(
+    src,
+    clonedSvg,
+    (src: SVGElement, tgt: SVGElement) => {
+      if (tgt.style) copyComputedStyles(src, tgt, styles)
+    },
+    (src: SVGElement, tgt: SVGElement) => {
+      if (tgt.style && tgt.parentNode) cleanStyle(tgt);
+
+      if (tgt.attributes) cleanAttrs(tgt, attrs, styles);
+    }
+  )
 
   return clonedSvg;
 }
