@@ -18,8 +18,11 @@ export class SVGSaver {
    * console.log('saved image with data URL: ', saver.getSVGDataURL());
    * ```
    */
-  constructor(svg: SVGSVGElement) {
-    this.loadNewSVG(svg);
+  constructor(svg?: SVGSVGElement) {
+    this.loadNewSVG(
+      svg ??
+      document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    )
   }
 
   /**
