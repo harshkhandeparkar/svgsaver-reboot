@@ -9,6 +9,6 @@
     - [x] Rename uri to DataURL
     - [x] Clean, Update jsdoc/comments
     - [x] Convert callbacks to promise/async_await
-- [] rollup
-- [] Use typedoc for documentation
-- [] update readme
+- [x] rollup
+- [x] Use typedoc for documentation
+- [x] update readme
