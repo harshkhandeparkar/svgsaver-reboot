@@ -1,7 +1,6 @@
-type DefaultValue = string;
 /** List of SVG style properties with default values. */
 export type SVGStyles = {
-  [propertyName: string]: DefaultValue
+  [propertyName: string]: string
 }
 
 /** List of allowed SVG style properties with default values. */
