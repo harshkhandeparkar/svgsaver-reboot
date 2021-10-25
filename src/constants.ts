@@ -1,8 +1,11 @@
 type DefaultValue = string;
+/** List of SVG style properties with default values. */
 export type SVGStyles = {
   [propertyName: string]: DefaultValue
 }
-export const SVGAllowedStyles: SVGStyles = {   // list of allowed CSS styles and default values
+
+/** List of allowed SVG style properties with default values. */
+export const SVGAllowedStyles: SVGStyles = {
   'alignment-baseline': 'auto',
   'baseline-shift': 'baseline',
   'clip': 'auto',
@@ -67,15 +70,17 @@ export const SVGAllowedStyles: SVGStyles = {   // list of allowed CSS styles and
   'writing-mode': 'lr-tb'
 };
 
+/** List of SVG attribute names. */
 export type SVGAttrs = string[];
 
-const SVGDirectAttrs: SVGAttrs = [  // list of allowed attributes on SVG
+/** List of allowed direct SVG attributes. */
+const SVGDirectAttrs: SVGAttrs = [
   'id', 'xml: base', 'xml: lang', 'xml: space', // Core
-  'height', 'result', 'width', 'x', 'y',     // Primitive
-  'xlink: href',                              // Xlink attribute
+  'height', 'result', 'width', 'x', 'y',        // Primitive
+  'xlink: href',                                // Xlink attribute
   'href',
   'style', 'class',
-  'd', 'pathLength',                          // Path
+  'd', 'pathLength',                            // Path
   'x', 'y', 'dx', 'dy', 'glyphRef', 'format',
   'x1', 'y1', 'x2', 'y2',
   'rotate', 'textLength',
@@ -87,13 +92,14 @@ const SVGDirectAttrs: SVGAttrs = [  // list of allowed attributes on SVG
   'markerUnits', 'markerWidth', 'markerHeight',
   'maskUnits',
   'transform',
-  'viewBox', 'version',                      // Container
+  'viewBox', 'version',                         // Container
   'preserveAspectRatio', 'xmlns',
-  'points',                                 // Polygons
+  'points',                                     // Polygons
   'offset',
   'xlink:href'
-];
+]
 
+/** List of allowed inheritable SVG attributes. */
 const SVGInheritableAttrs: SVGAttrs = [
   'clip-rule',
   'color',
@@ -140,6 +146,7 @@ const SVGInheritableAttrs: SVGAttrs = [
   'white-space',
   'word-spacing',
   'writing-mode'
-];
+]
 
+/** List of all allowed SVG attributes. */
 export const SVGAllowedAttrs: SVGAttrs = [...SVGDirectAttrs, ...SVGInheritableAttrs];

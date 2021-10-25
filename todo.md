@@ -7,9 +7,8 @@
     - [x] Fix `any` types
     - [x] Try to use arrow functions
     - [x] Rename uri to DataURL
-    - [] Clean, Update jsdoc/comments
-    - [] Clean up API function names
-    - [] Clean up functions
+    - [x] Clean, Update jsdoc/comments
+    - [] Convert callbacks to promise/async_await
 
 - [] rollup
 - [] Use typedoc for documentation

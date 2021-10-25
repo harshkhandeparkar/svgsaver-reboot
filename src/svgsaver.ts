@@ -6,34 +6,29 @@ import { isDefined, isFunction, getFilename } from './utils';
 export class SVGSaver {
   svg: SVGSVGElement;
 
+  /**
+   * Converts and saves an SVG element as a PNG or SVG image.
+   * @param svg The SVG to be converted/saved.
+   *
+   * @example
+   * ```ts
+   * const saver = new SVGSaver(document.getElementById('svg'));
+   * saver.saveAsPNG('image.png');
+   *
+   * console.log('saved image with data URL: ', saver.getSVGDataURL());
+   * ```
+   */
   constructor(svg: SVGSVGElement) {
     this.svg = svg;
   }
 
   /**
-  * Return the cloned SVG after cleaning
+  * Returns the SVG text after cleaning
   *
   * @param el The element to copy.
   * @returns SVG text after cleaning
-  * @api public
   */
-  cloneSVG(): SVGSVGElement {
-    const svg = cloneSVG(this.svg, SVGAllowedAttrs, SVGAllowedStyles);
-
-    svg.setAttribute('width', svg.getAttribute('width') || '500');
-    svg.setAttribute('height', svg.getAttribute('height') || '900');
-
-    return svg;
-  }
-
-  /**
-  * Return the SVG text after cleaning
-  *
-  * @param el The element to copy.
-  * @returns SVG text after cleaning
-  * @api public
-  */
-  getSVG(): string {
+  private getSVG(): string {
     const xml = this.svg.outerHTML;
 
     if (xml) {
@@ -44,10 +39,9 @@ export class SVGSaver {
   }
 
   /**
-  * Return the SVG, after cleaning, as a text/xml Blob
+  * Returns the SVG, after cleaning, as a text/xml Blob.
   *
-  * @returns SVG as a text/xml Blob
-  * @api public
+  * @returns SVG as a text/xml Blob.
   */
   getSVGBlob(): Blob {
     const xml = this.getSVG();
@@ -56,11 +50,9 @@ export class SVGSaver {
   }
 
   /**
-  * Return the SVG, after cleaning, as a image/svg+xml;base64 encoded string
+  * Returns the SVG, after cleaning, as a image/svg+xml;base64 encoded dataURL string.
   *
-  * @param el The element to copy.
-  * @returns SVG as image/svg+xml;base64 encoded string
-  * @api public
+  * @returns SVG as image/svg+xml;base64 encoded dataURL string.
   */
   getSVGDataURL(): string {
     const xml = encodeURIComponent(this.getSVG());
@@ -73,31 +65,24 @@ export class SVGSaver {
   }
 
   /**
-  * Saves the SVG as a SVG file using method compatible with the browser
+  * Saves the SVG as a `.svg` file.
   *
-  * @param el The element to copy.
-  * @param filename The filename to save, defaults to the SVG title or 'untitled.svg'
-  * @returns The SvgSaver instance
-  * @api public
+  * @param filename The name of the file to save, defaults to the SVG title or `untitled.svg`.
   */
-  saveAsSVG(filename?: string): SVGSaver {
+  saveAsSVG(filename?: string) {
     const saveFilename = getFilename(this.svg, filename, 'svg');
 
     if (isFunction(Blob)) {
       saveBlob(this.getSVGBlob(), saveFilename);
-      return this;
     }
 
     saveDataURL(this.getSVGDataURL(), saveFilename);
-    return this;
   }
 
   /**
-  * Gets the SVG as a PNG data URL.
+  * Gets the PNG dataURL of the SVG.
   *
-  * @param el The element to copy.
-  * @param cb Call back called with the PNG data URL.
-  * @api public
+  * @param cb Callback called with the PNG data URL.
   */
   getPNGDataURL(cb: (dataURL: string) => void) {
     return loadCanvasImage(
@@ -106,6 +91,12 @@ export class SVGSaver {
     )
   }
 
+  /**
+   * Gets the PNG Blob of the SVG.
+   *
+   * @param cb Callback called with the PNG Blob.
+   * @returns
+   */
   getPNGBlob(cb: (blob: Blob) => void) {
     return loadCanvasImage(
       this.getSVGDataURL(),
@@ -114,19 +105,13 @@ export class SVGSaver {
   }
 
   /**
-  * Saves the SVG as a PNG file using method compatible with the browser
+  * Saves the SVG as a PNG file.
   *
-  * @param el The element to copy.
-  * @param filename The filename to save, defaults to the SVG title or 'untitled.png'
-  * @returns The SvgSaver instance
-  * @api public
+  * @param filename The name of the file to save, defaults to the SVG title or `untitled.png`.
   */
   saveAsPNG(filename?: string) {
     const saveFilename = getFilename(this.svg, filename, 'png');
 
-    return savePNG(this.getSVGDataURL(), saveFilename);
+    savePNG(this.getSVGDataURL(), saveFilename);
   }
-
 }
-
-export default SVGSaver;

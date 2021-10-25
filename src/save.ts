@@ -1,6 +1,15 @@
 import { isDefined } from './utils';
 
-export function saveDataURL(dataURL: string, name: string) {
+/**
+ * Saves a file from its dataURL.
+ *
+ * @param dataURL dataURL of the file to be saved.
+ * @param name Name of the file to be saved.
+ */
+export function saveDataURL(
+  dataURL: string,
+  name: string
+) {
   const dl = document.createElement('a');
 
   dl.setAttribute('href', dataURL);
@@ -10,6 +19,12 @@ export function saveDataURL(dataURL: string, name: string) {
   return true;
 }
 
+/**
+ * Loads an image into a canvas from its dataURL.
+ *
+ * @param dataURL dataURL of the image to be saved.
+ * @param cb Callback called with the canvas after the image is loaded.
+ */
 export function loadCanvasImage(
   dataURL: string,
   cb: (canvas: HTMLCanvasElement) => void
@@ -31,6 +46,12 @@ export function loadCanvasImage(
   return true;
 }
 
+/**
+ * Saves an image as a PNG from its dataURL.
+ *
+ * @param dataURL dataURL of the image to be saved.
+ * @param name Name of the file to be saved.
+ */
 export function savePNG(dataURL: string, name: string) {
   return loadCanvasImage(
     dataURL,
