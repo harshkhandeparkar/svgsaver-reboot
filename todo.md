@@ -6,8 +6,8 @@
     - [x] Convert all `unknown` types to proper types
     - [x] Fix `any` types
     - [x] Try to use arrow functions
+    - [x] Rename uri to DataURL
     - [] Update jsdoc
-    - [] Rename uri to DataURL
     - [] Clean up API function names
     - [] Clean up functions
 - [] Node compatibility

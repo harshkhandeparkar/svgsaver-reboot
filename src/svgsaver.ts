@@ -1,6 +1,6 @@
 import {svgAllowedStyles, svgAllowedAttrs} from './constants';
 import {cloneSvg} from './clonesvg';
-import {saveUri, savePng, loadCanvasImage, saveBlob} from './save';
+import {saveDataURL, savePng, loadCanvasImage, saveBlob} from './save';
 import {isDefined, isFunction, getFilename} from './utils';
 
 export class SvgSaver {
@@ -56,13 +56,13 @@ export class SvgSaver {
   }
 
   /**
-  * Return the SVG, after cleaning, as a image/svg+xml;base64 URI encoded string
+  * Return the SVG, after cleaning, as a image/svg+xml;base64 encoded string
   *
   * @param el The element to copy.
-  * @returns SVG as image/svg+xml;base64 URI encoded string
+  * @returns SVG as image/svg+xml;base64 encoded string
   * @api public
   */
-  getSvgUri(): string {
+  getSvgDataURL(): string {
     const xml = encodeURIComponent(this.getSvg());
 
     if (isDefined(window.btoa)) {
@@ -88,27 +88,27 @@ export class SvgSaver {
       return this;
     }
 
-    saveUri(this.getSvgUri(), saveFilename);
+    saveDataURL(this.getSvgDataURL(), saveFilename);
     return this;
   }
 
   /**
-  * Gets the SVG as a PNG data URI.
+  * Gets the SVG as a PNG data URL.
   *
   * @param el The element to copy.
-  * @param cb Call back called with the PNG data uri.
+  * @param cb Call back called with the PNG data URL.
   * @api public
   */
-  getPngUri(cb: (uri: string) => void) {
+  getPngDataURL(cb: (dataURL: string) => void) {
     return loadCanvasImage(
-      this.getSvgUri(),
+      this.getSvgDataURL(),
       (canvas) =>  cb(canvas.toDataURL('image/png'))
     )
   }
 
   getPngBlob(cb: (blob: Blob) => void) {
     return loadCanvasImage(
-      this.getSvgUri(),
+      this.getSvgDataURL(),
       (canvas) => canvas.toBlob(cb, 'image/png')
     )
   }
@@ -124,7 +124,7 @@ export class SvgSaver {
   saveAsPng(filename?: string) {
     const saveFilename = getFilename(this.svg, filename, 'png');
 
-    return savePng(this.getSvgUri(), saveFilename);
+    return savePng(this.getSvgDataURL(), saveFilename);
   }
 
 }

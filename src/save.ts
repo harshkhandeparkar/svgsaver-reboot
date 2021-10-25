@@ -1,9 +1,9 @@
 import { isDefined } from './utils';
 
-export function saveUri(uri: string, name: string) {
+export function saveDataURL(dataURL: string, name: string) {
   const dl = document.createElement('a');
 
-  dl.setAttribute('href', uri);
+  dl.setAttribute('href', dataURL);
   dl.setAttribute('download', name);
 
   dl.dispatchEvent(new MouseEvent('click'));
@@ -11,7 +11,7 @@ export function saveUri(uri: string, name: string) {
 }
 
 export function loadCanvasImage(
-  uri: string,
+  dataURL: string,
   cb: (canvas: HTMLCanvasElement) => void
 ) {
   const canvas = document.createElement('canvas');
@@ -27,25 +27,25 @@ export function loadCanvasImage(
     cb(canvas);
   }
 
-  image.src = uri;
+  image.src = dataURL;
   return true;
 }
 
-export function savePng(uri: string, name: string) {
+export function savePng(dataURL: string, name: string) {
   return loadCanvasImage(
-    uri,
+    dataURL,
     (canvas: HTMLCanvasElement) => {
       if (isDefined(canvas.toBlob)) {
         canvas.toBlob((blob) => {
           saveBlob(blob, name);
         })
       } else {
-        saveUri(canvas.toDataURL('image/png'), name);
+        saveDataURL(canvas.toDataURL('image/png'), name);
       }
     }
   )
 }
 
 export function saveBlob(blob: Blob, name: string) {
-  return saveUri(URL.createObjectURL(blob), name);
+  return saveDataURL(URL.createObjectURL(blob), name);
 }
