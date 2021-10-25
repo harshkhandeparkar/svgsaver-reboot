@@ -55,8 +55,8 @@ export class SvgSaver {
   * @api public
   *
   * @example
-  * var svgsaver = new SvgSaver();                      // creates a new instance
-  * var svg = document.querySelector('#mysvg');         // find the SVG element
+  * const svgsaver = new SvgSaver();                      // creates a new instance
+  * const svg = document.querySelector('#mysvg');         // find the SVG element
   * svgsaver.asSvg(svg);                                // save as SVG
   */
   constructor({ attrs, styles }: ISvgSaverSettings = {}) {
@@ -96,7 +96,7 @@ export class SvgSaver {
   getHTML(el: SVGSVGElement): string {
     const svg = this.cloneSVG(el);
 
-    var html = svg.outerHTML;
+    const html = svg.outerHTML;
     if (html) {
       return html;
     }
@@ -172,7 +172,7 @@ export class SvgSaver {
     cb: (uri: string) => void
   ) {
     el = SvgSaver.getSvg(el);
-    var filename = SvgSaver.getFilename(el, null, 'png');
+    const filename = SvgSaver.getFilename(el, null, 'png');
 
     return createCanvas(this.getUri(el), filename, function (canvas) {
       cb(canvas.toDataURL('image/png'));

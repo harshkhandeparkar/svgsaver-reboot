@@ -49,9 +49,9 @@ jspm install svgsaver=npm:svgsaver
 ### Example
 
 ```
-var SvgSaver = require('svgsaver');                 // if using CommonJS environment
-var svgsaver = new SvgSaver();                      // creates a new instance
-var svg = document.querySelector('#mysvg');         // find the SVG element
+const SvgSaver = require('svgsaver');                 // if using CommonJS environment
+const svgsaver = new SvgSaver();                      // creates a new instance
+const svg = document.querySelector('#mysvg');         // find the SVG element
 svgsaver.asSvg(svg);                                // save as SVG
 ```
 

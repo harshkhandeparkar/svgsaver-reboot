@@ -31,7 +31,7 @@ function cleanStyle (tgt, parentStyles) {
 function domWalk (src, tgt, down, up) {
   down(src, tgt);
   const children = src.childNodes;
-  for (var i = 0; i < children.length; i++) {
+  for (let i = 0; i < children.length; i++) {
     domWalk(children[i], tgt.childNodes[i], down, up);
   }
   up(src, tgt);

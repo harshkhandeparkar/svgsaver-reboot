@@ -6,4 +6,4 @@
     - [] Fix `any` types
     - [] Update jsdoc
 - [] Node compatibility
-- [] Use jsdoc for documentation
+- [] Use typedoc for documentation
