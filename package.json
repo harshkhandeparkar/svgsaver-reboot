@@ -5,9 +5,9 @@
   "main": "build/index.js",
   "typings": "build/index.d.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && rollup -c",
     "doc": "echo 'jsdoc not set up yet'",
-    "npm-publish": "pnpm build && yarn doc && git add dist && git add docs && git add example/docs && pnpm publish"
+    "npm-publish": "pnpm build && pnpm doc && git add dist && git add docs && git add example/docs && pnpm publish"
   },
   "keywords": [
     "svgsaver",
@@ -19,7 +19,11 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "@types/node": "^16.11.4",
+    "rollup": "^2.58.3",
+    "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.4.4"
   },
   "dependencies": {
