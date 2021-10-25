@@ -31,6 +31,7 @@ function cleanStyle (tgt, parentStyles) {
 function domWalk (src, tgt, down, up) {
   down(src, tgt);
   const children = src.childNodes;
+
   for (let i = 0; i < children.length; i++) {
     domWalk(children[i], tgt.childNodes[i], down, up);
   }
@@ -38,7 +39,7 @@ function domWalk (src, tgt, down, up) {
 }
 
 // Clones an SVGElement, copies approprate atttributes and styles.
-export function cloneSvg (src, attrs, styles) {
+export function cloneSvg(src, attrs, styles) {
   const clonedSvg = src.cloneNode(true);
 
   domWalk(src, clonedSvg, (src, tgt) => {

@@ -4,7 +4,6 @@ import {svgAttrs, svgStyles, inheritableAttrs} from './collection';
 import {cloneSvg} from './clonesvg';
 import {saveUri, savePng, createCanvas} from './saveuri';
 import {isDefined, isFunction, isUndefined, isNode} from './utils';
-import FileSaver from 'file-saver';
 
 // inheritable styles may be overridden by parent, always copy for now
 inheritableAttrs.forEach(function (k) {
@@ -21,22 +20,6 @@ export interface ISvgSaverSettings {
 export class SvgSaver {
   attrs: unknown;
   styles: unknown;
-
-  static getSvg(el: SVGSVGElement | string): SVGSVGElement {
-    if (isUndefined(el) || el === '') {
-      el = document.body.querySelector('svg');
-    } else if (typeof el === 'string') {
-      el = document.body.querySelector(el) as SVGSVGElement;
-    }
-    if (el && el.tagName !== 'svg') {
-      el = el.querySelector('svg');
-    }
-    if (!isNode(el)) {
-      throw new Error('svgsaver: Can\'t find an svg element');
-    }
-
-    return el as SVGSVGElement;
-  }
 
   static getFilename(
     el: SVGSVGElement,
@@ -72,7 +55,6 @@ export class SvgSaver {
   * @api public
   */
   cloneSVG(el: SVGSVGElement): SVGSVGElement {
-    el = SvgSaver.getSvg(el);
     const svg = cloneSvg(el, this.attrs, this.styles);
 
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -148,15 +130,14 @@ export class SvgSaver {
   * @api public
   */
   asSvg(el: SVGSVGElement, filename?: string): SvgSaver {
-    el = SvgSaver.getSvg(el);
-    filename = SvgSaver.getFilename(el, filename, 'svg');
+    const saveFilename = SvgSaver.getFilename(el, filename, 'svg');
 
     if (isFunction(Blob)) {
-      FileSaver.saveAs(this.getBlob(el), filename);
+      FileSaver.saveAs(this.getBlob(el), saveFilename);
       return this;
     }
 
-    saveUri(this.getUri(el), filename);
+    saveUri(this.getUri(el), saveFilename);
     return this;
   }
 
