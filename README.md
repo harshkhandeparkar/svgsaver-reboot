@@ -4,8 +4,6 @@ Download an SVG element as an SVG or PNG file, including CSS defined styles.
 [Fork] A modern, updated, typescript version of the popular Javascript library [Hypercubed/svgsaver](https://github.com/Hypercubed/svgsaver).
 ***
 
-**NOTE: THIS LIBRARY IS NOT READY FOR PRODUCTION AND IS ONLY USED INTERNALLY IN [rainbow-board](https://github.com/harshkhandeparkar/rainbow-board).**
-
 ### Table of Contents
 - [Documentation](https://harshkhandeparkar.github.io/svgsaver-reboot).
 - [What is Different From Original](#what-is-different-from-original).
