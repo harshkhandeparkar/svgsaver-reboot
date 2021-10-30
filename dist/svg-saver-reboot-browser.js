@@ -16,15 +16,6 @@
 
 	var constants = {};
 
-	var __spreadArray = (commonjsGlobal && commonjsGlobal.__spreadArray) || function (to, from, pack) {
-	    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-	        if (ar || !(i in from)) {
-	            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-	            ar[i] = from[i];
-	        }
-	    }
-	    return to.concat(ar || Array.prototype.slice.call(from));
-	};
 	Object.defineProperty(constants, "__esModule", { value: true });
 	constants.SVGAllowedAttrs = constants.SVGAllowedStyles = void 0;
 	/** List of allowed SVG style properties with default values. */
@@ -117,56 +108,8 @@
 	    'offset',
 	    'xlink:href'
 	];
-	/** List of allowed inheritable SVG attributes. */
-	var SVGInheritableAttrs = [
-	    'clip-rule',
-	    'color',
-	    'color-interpolation',
-	    'color-interpolation-filters',
-	    'color-profile',
-	    'color-rendering',
-	    'cursor',
-	    'direction',
-	    'fill',
-	    'fill-opacity',
-	    'fill-rule',
-	    'font',
-	    'font-family',
-	    'font-size',
-	    'font-size-adjust',
-	    'font-stretch',
-	    'font-style',
-	    'font-variant',
-	    'font-weight',
-	    'glyph-orientation-horizontal',
-	    'glyph-orientation-vertical',
-	    'image-rendering',
-	    'kerning',
-	    'letter-spacing',
-	    'marker',
-	    'marker-end',
-	    'marker-mid',
-	    'marker-start',
-	    'pointer-events',
-	    'shape-rendering',
-	    'stroke',
-	    'stroke-dasharray',
-	    'stroke-dashoffset',
-	    'stroke-linecap',
-	    'stroke-linejoin',
-	    'stroke-miterlimit',
-	    'stroke-opacity',
-	    'stroke-width',
-	    'text-anchor',
-	    'text-rendering',
-	    'transform',
-	    'visibility',
-	    'white-space',
-	    'word-spacing',
-	    'writing-mode'
-	];
 	/** List of all allowed SVG attributes. */
-	constants.SVGAllowedAttrs = __spreadArray(__spreadArray([], SVGDirectAttrs, true), SVGInheritableAttrs, true);
+	constants.SVGAllowedAttrs = SVGDirectAttrs;
 
 	var clonesvg = {};
 
@@ -186,7 +129,7 @@
 	        return;
 	    for (var i = 0; i < el.attributes.length; i++) {
 	        var attr = el.attributes.item(i);
-	        if (!Object.keys(allowedStyles).includes(attr.name) ||
+	        if (!Object.keys(allowedStyles).includes(attr.name) &&
 	            !allowedAttrs.includes(attr.name))
 	            el.removeAttribute(attr.name);
 	    }
@@ -267,12 +210,10 @@
 	utils.isFunction = isFunction;
 	var isDefined = function (a) { return typeof a !== 'undefined'; };
 	utils.isDefined = isDefined;
-	function getFilename(el, ext, filename) {
-	    var _a;
-	    if (!filename || filename === '') {
-	        filename = ((_a = el.getAttribute('title')) !== null && _a !== void 0 ? _a : 'untitled') + '.' + ext;
-	    }
-	    return encodeURI(filename);
+	function getFilename(ext, filename) {
+	    var name = filename !== null && filename !== void 0 ? filename : 'image';
+	    var nameParts = name.split('.');
+	    return (nameParts.length > 1 ? nameParts.slice(0, -1) : nameParts).join('.') + ("." + ext);
 	}
 	utils.getFilename = getFilename;
 
@@ -325,7 +266,7 @@
 	    var dl = document.createElement('a');
 	    dl.setAttribute('href', dataURL);
 	    dl.setAttribute('download', name);
-	    dl.dispatchEvent(new MouseEvent('click'));
+	    dl.click();
 	}
 	save.saveDataURL = saveDataURL;
 	/**
@@ -341,12 +282,15 @@
 	                    var canvas = document.createElement('canvas');
 	                    var context = canvas.getContext('2d');
 	                    var image = new Image();
-	                    image.onload = function () {
+	                    image.addEventListener('load', function () {
 	                        canvas.width = image.width;
 	                        canvas.height = image.height;
 	                        context.drawImage(image, 0, 0);
 	                        resolve(canvas);
-	                    };
+	                    });
+	                    image.addEventListener('error', function (e) {
+	                        console.log('img load error', e);
+	                    });
 	                    image.src = dataURL;
 	                })];
 	        });
@@ -458,6 +402,7 @@
 	     */
 	    SVGSaver.prototype.loadNewSVG = function (svg) {
 	        this.svg = (0, clonesvg_1.cloneSVG)(svg, constants_1.SVGAllowedAttrs, constants_1.SVGAllowedStyles);
+	        this.svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2000/svg');
 	    };
 	    /**
 	    * Returns the SVG text after cleaning
@@ -466,11 +411,7 @@
 	    * @returns SVG text after cleaning
 	    */
 	    SVGSaver.prototype.getSVG = function () {
-	        var xml = this.svg.outerHTML;
-	        if (xml) {
-	            return xml;
-	        }
-	        return (new window.XMLSerializer()).serializeToString(this.svg);
+	        return this.svg.outerHTML;
 	    };
 	    /**
 	    * Returns the SVG, after cleaning, as a text/xml Blob.
@@ -479,7 +420,7 @@
 	    */
 	    SVGSaver.prototype.getSVGBlob = function () {
 	        var xml = this.getSVG();
-	        return new Blob([xml], { type: 'text/xml' });
+	        return new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
 	    };
 	    /**
 	    * Returns the SVG, after cleaning, as a image/svg+xml;base64 encoded dataURL string.
@@ -487,12 +428,7 @@
 	    * @returns SVG as image/svg+xml;base64 encoded dataURL string.
 	    */
 	    SVGSaver.prototype.getSVGDataURL = function () {
-	        var xml = encodeURIComponent(this.getSVG());
-	        if ((0, utils_1.isDefined)(window.btoa)) {
-	            // see http://stackoverflow.com/questions/23223718/failed-to-execute-btoa-on-window-the-string-to-be-encoded-contains-characte
-	            return 'data:image/svg+xml;base64,' + window.btoa(unescape(xml));
-	        }
-	        return 'data:image/svg+xml,' + xml;
+	        return "data:image/svg+xml;base64," + Buffer.from(this.getSVG()).toString('base64');
 	    };
 	    /**
 	    * Saves the SVG as a `.svg` file.
@@ -500,10 +436,7 @@
 	    * @param filename The name of the file to save, defaults to the SVG title or `untitled.svg`.
 	    */
 	    SVGSaver.prototype.saveAsSVG = function (filename) {
-	        var saveFilename = (0, utils_1.getFilename)(this.svg, filename, 'svg');
-	        if ((0, utils_1.isFunction)(Blob)) {
-	            (0, save_1.saveBlob)(this.getSVGBlob(), saveFilename);
-	        }
+	        var saveFilename = (0, utils_1.getFilename)('svg', filename);
 	        (0, save_1.saveDataURL)(this.getSVGDataURL(), saveFilename);
 	    };
 	    /**
@@ -556,7 +489,7 @@
 	            return __generator(this, function (_a) {
 	                switch (_a.label) {
 	                    case 0:
-	                        saveFilename = (0, utils_1.getFilename)(this.svg, filename, 'png');
+	                        saveFilename = (0, utils_1.getFilename)('png', filename);
 	                        return [4 /*yield*/, (0, save_1.savePNG)(this.getSVGDataURL(), saveFilename)];
 	                    case 1:
 	                        _a.sent();
