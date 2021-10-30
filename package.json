@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc --project config/tsconfig.json && rollup --config config/rollup.config.js",
     "doc": "typedoc --options config/typedoc.html.js",
-    "npm-publish": "pnpm build && pnpm doc && git add dist && git add docs && git commit -Sm 'new version' && pnpm publish"
+    "npm-publish": "pnpm build && pnpm doc && git add dist && git add docs && git commit -m 'new version' && pnpm publish"
   },
   "keywords": [
     "svgsaver",
