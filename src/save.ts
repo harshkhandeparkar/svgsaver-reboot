@@ -15,7 +15,7 @@ export function saveDataURL(
   dl.setAttribute('href', dataURL);
   dl.setAttribute('download', name);
 
-  dl.dispatchEvent(new MouseEvent('click'));
+  dl.click();
 }
 
 /**
@@ -32,13 +32,17 @@ export async function loadCanvasImage(dataURL: string) {
 
       const image = new Image();
 
-      image.onload = () => {
+      image.addEventListener('load', () => {
         canvas.width = image.width;
         canvas.height = image.height;
         context.drawImage(image, 0, 0);
 
         resolve(canvas);
-      }
+      })
+
+      image.addEventListener('error', e => {
+        console.log('img load error', e)
+      })
 
       image.src = dataURL;
     }
