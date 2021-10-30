@@ -148,4 +148,4 @@ const SVGInheritableAttrs: SVGAttrs = [
 ]
 
 /** List of all allowed SVG attributes. */
-export const SVGAllowedAttrs: SVGAttrs = [...SVGDirectAttrs, ...SVGInheritableAttrs];
+export const SVGAllowedAttrs: SVGAttrs = SVGDirectAttrs;
