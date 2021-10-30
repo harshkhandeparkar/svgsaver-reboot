@@ -82,11 +82,7 @@ export class SVGSaver {
   * @param filename The name of the file to save, defaults to the SVG title or `untitled.svg`.
   */
   saveAsSVG(filename?: string) {
-    const saveFilename = getFilename(this.svg, filename, 'svg');
-
-    if (isFunction(Blob)) {
-      saveBlob(this.getSVGBlob(), saveFilename);
-    }
+    const saveFilename = getFilename('svg', filename);
 
     saveDataURL(this.getSVGDataURL(), saveFilename);
   }
@@ -124,7 +120,7 @@ export class SVGSaver {
   * @async
   */
   async saveAsPNG(filename?: string) {
-    const saveFilename = getFilename(this.svg, filename, 'png');
+    const saveFilename = getFilename('png', filename);
 
     await savePNG(this.getSVGDataURL(), saveFilename);
   }
