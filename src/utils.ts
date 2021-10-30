@@ -10,7 +10,7 @@ export function getFilename(
   const name = filename ?? 'image';
   const nameParts = name.split('.');
 
-  return nameParts.slice(0, -1).join('.') + `.${ext}`;
+  return (nameParts.length > 1 ? nameParts.slice(0, -1) : nameParts).join('.') + `.${ext}`;
 }
 
 export type PromiseResolve<T> = (t: T) => void;
