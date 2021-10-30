@@ -32,6 +32,8 @@ export class SVGSaver {
    */
   loadNewSVG(svg: SVGSVGElement) {
     this.svg = cloneSVG(svg, SVGAllowedAttrs, SVGAllowedStyles);
+
+    this.svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2000/svg');
   }
 
   /**
@@ -61,7 +63,7 @@ export class SVGSaver {
   * @returns SVG as image/svg+xml;base64 encoded dataURL string.
   */
   getSVGDataURL(): string {
-    return URL.createObjectURL(this.getSVGBlob());
+    return `data:image/svg+xml;base64,` + Buffer.from(this.getSVG()).toString('base64');
   }
 
   /**
@@ -81,7 +83,7 @@ export class SVGSaver {
   * @async Returns a promise that resolves with the PNG data URL.
   */
   async getPNGDataURL() {
-    const canvas = await loadCanvasImage(this.getSVGDataURL())
+    const canvas = await loadCanvasImage(this.getSVGDataURL());
 
     return canvas.toDataURL('image/png');
   }
