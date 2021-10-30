@@ -1,7 +1,7 @@
 import { SVGAllowedAttrs, SVGAllowedStyles } from './constants';
 import { cloneSVG } from './clonesvg';
-import { saveDataURL, savePNG, loadCanvasImage, saveBlob } from './save';
-import { isDefined, isFunction, getFilename, PromiseResolve } from './utils';
+import { saveDataURL, savePNG, loadCanvasImage } from './save';
+import { getFilename, PromiseResolve } from './utils';
 
 export class SVGSaver {
   svg: SVGSVGElement;
@@ -41,13 +41,7 @@ export class SVGSaver {
   * @returns SVG text after cleaning
   */
   private getSVG(): string {
-    const xml = this.svg.outerHTML;
-
-    if (xml) {
-      return xml;
-    }
-
-    return (new window.XMLSerializer()).serializeToString(this.svg);
+    return this.svg.outerHTML;
   }
 
   /**
@@ -58,7 +52,7 @@ export class SVGSaver {
   getSVGBlob(): Blob {
     const xml = this.getSVG();
 
-    return new Blob([xml], { type: 'text/xml' });
+    return new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
   }
 
   /**
@@ -67,13 +61,7 @@ export class SVGSaver {
   * @returns SVG as image/svg+xml;base64 encoded dataURL string.
   */
   getSVGDataURL(): string {
-    const xml = encodeURIComponent(this.getSVG());
-
-    if (isDefined(window.btoa)) {
-      // see http://stackoverflow.com/questions/23223718/failed-to-execute-btoa-on-window-the-string-to-be-encoded-contains-characte
-      return 'data:image/svg+xml;base64,' + window.btoa(unescape(xml));
-    }
-    return 'data:image/svg+xml,' + xml;
+    return URL.createObjectURL(this.getSVGBlob());
   }
 
   /**
