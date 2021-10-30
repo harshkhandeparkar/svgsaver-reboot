@@ -19,7 +19,7 @@ function cleanAttrs(
     let attr = el.attributes.item(i);
 
     if (
-      !Object.keys(allowedStyles).includes(attr.name) ||
+      !Object.keys(allowedStyles).includes(attr.name) &&
       !allowedAttrs.includes(attr.name)
     ) el.removeAttribute(attr.name);
   }
