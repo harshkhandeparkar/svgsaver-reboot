@@ -9,6 +9,6 @@ module.exports = {
   excludeInternal: true,
   includeVersion: true,
   name: 'SVG Real Renderer',
-  entryPoints: getListOfFiles(join(__dirname, '..', 'src')),
+  entryPoints: [join(__dirname, '..', 'src', 'svgsaver.ts'), join(__dirname, '..', 'src', 'index.ts')],
   tsconfig: join(__dirname, 'tsconfig.json')
 }
