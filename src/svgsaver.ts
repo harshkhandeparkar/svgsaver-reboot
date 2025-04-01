@@ -63,7 +63,7 @@ export class SVGSaver {
   * @returns SVG as image/svg+xml;base64 encoded dataURL string.
   */
   getSVGDataURL(): string {
-    return `data:image/svg+xml;base64,` + Buffer.from(this.getSVG()).toString('base64');
+    return `data:image/svg+xml;base64,` + btoa(this.getSVG());
   }
 
   /**
