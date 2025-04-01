@@ -1,6 +1,6 @@
 {
   "name": "svgsaver-reboot",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "description": "[Fork] A modern, updated, typescript version of the popular Javascript library Hypercubed/svgsaver.",
   "main": "build/index.js",
   "typings": "build/index.d.js",
