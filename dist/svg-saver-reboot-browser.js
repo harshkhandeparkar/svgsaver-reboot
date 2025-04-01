@@ -428,7 +428,6 @@
 	    * @returns SVG as image/svg+xml;base64 encoded dataURL string.
 	    */
 	    SVGSaver.prototype.getSVGDataURL = function () {
-	        console.log(this.getSVG());
 	        return "data:image/svg+xml;base64," + btoa(this.getSVG());
 	    };
 	    /**
