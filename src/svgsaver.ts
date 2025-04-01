@@ -63,7 +63,6 @@ export class SVGSaver {
   * @returns SVG as image/svg+xml;base64 encoded dataURL string.
   */
   getSVGDataURL(): string {
-    console.log(this.getSVG());
     return `data:image/svg+xml;base64,` + btoa(this.getSVG());
   }
 
