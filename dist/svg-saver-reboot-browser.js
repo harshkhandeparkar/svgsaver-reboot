@@ -213,7 +213,7 @@
 	function getFilename(ext, filename) {
 	    var name = filename !== null && filename !== void 0 ? filename : 'image';
 	    var nameParts = name.split('.');
-	    return (nameParts.length > 1 ? nameParts.slice(0, -1) : nameParts).join('.') + ("." + ext);
+	    return (nameParts.length > 1 ? nameParts.slice(0, -1) : nameParts).join('.') + ".".concat(ext);
 	}
 	utils.getFilename = getFilename;
 
@@ -232,7 +232,7 @@
 	    function verb(n) { return function (v) { return step([n, v]); }; }
 	    function step(op) {
 	        if (f) throw new TypeError("Generator is already executing.");
-	        while (_) try {
+	        while (g && (g = 0, op[0] && (_ = 0)), _) try {
 	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
 	            if (y = 0, t) op = [op[0] & 2, t.value];
 	            switch (op[0]) {
@@ -352,7 +352,7 @@
 	    function verb(n) { return function (v) { return step([n, v]); }; }
 	    function step(op) {
 	        if (f) throw new TypeError("Generator is already executing.");
-	        while (_) try {
+	        while (g && (g = 0, op[0] && (_ = 0)), _) try {
 	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
 	            if (y = 0, t) op = [op[0] & 2, t.value];
 	            switch (op[0]) {
@@ -428,7 +428,7 @@
 	    * @returns SVG as image/svg+xml;base64 encoded dataURL string.
 	    */
 	    SVGSaver.prototype.getSVGDataURL = function () {
-	        return "data:image/svg+xml;base64," + Buffer.from(this.getSVG()).toString('base64');
+	        return "data:image/svg+xml;base64," + btoa(this.getSVG());
 	    };
 	    /**
 	    * Saves the SVG as a `.svg` file.
