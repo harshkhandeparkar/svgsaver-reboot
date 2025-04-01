@@ -411,7 +411,7 @@
 	    * @returns SVG text after cleaning
 	    */
 	    SVGSaver.prototype.getSVG = function () {
-	        return this.svg.outerHTML;
+	        return new XMLSerializer().serializeToString(this.svg);
 	    };
 	    /**
 	    * Returns the SVG, after cleaning, as a text/xml Blob.
@@ -428,6 +428,7 @@
 	    * @returns SVG as image/svg+xml;base64 encoded dataURL string.
 	    */
 	    SVGSaver.prototype.getSVGDataURL = function () {
+	        console.log(this.getSVG());
 	        return "data:image/svg+xml;base64," + btoa(this.getSVG());
 	    };
 	    /**
